@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+    postgres:
+      container_name: postgres
+      hostname: postgres
+      image: postgres:9.4
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: ''
+        POSTGRES_HOST_AUTH_METHOD: trust
+      ports:
+        - '5432:5432'
+      volumes:
+        - postgres:/var/lib/postgresql
+  
+    redis:
+      container_name: redis
+      hostname: redis
+      image: redis:2.8
+      ports:
+        - '6379:6379'
+      volumes:
+        - redis:/var/lib/redis
+  
+    mysql:
+      container_name: mysql
+      hostname: mysql
+      image: mysql:5.6
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      ports:
+        - '3306:3306'
+      volumes:
+        - mysql:/var/lib/mysql
+  
+    mongo:
+      container_name: mongo
+      hostname: mongo
+      image: mongo:3.4
+      ports:
+        - '27017:27017'
+      volumes:
+        - mongo:/data/db
+
+    auth-server:
+        image: rformagio/auth-server:latest
+        container_name: auth-server
+        hostname: auth-server
+        expose:
+          - '8090'
+        ports:
+          - '8090:8090'
+          
+volumes:
+  postgres:
+  redis:
+  mysql:
+  mongo:
+  auth-server:
+  
+networks:
+  default:
+    external:
+      name: rformagio
+  
