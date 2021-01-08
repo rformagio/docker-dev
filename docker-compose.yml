@@ -44,13 +44,33 @@ services:
         - mongo:/data/db
 
     auth-server:
-        image: rformagio/auth-server:latest
+        image: rformagio/auth-server:v1.0-cors
         container_name: auth-server
         hostname: auth-server
         expose:
           - '8090'
         ports:
           - '8090:8090'
+
+    kafka:
+      container_name: shared_kafka
+      hostname: shared_kafka
+      image: wurstmeister/kafka:2.12-2.1.0
+      ports:
+        - "9092"
+      environment:
+        KAFKA_BROKER_ID: 1
+        KAFKA_ADVERTISED_HOST_NAME: shared_kafka
+        KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      depends_on:
+        - zookeeper
+  
+    zookeeper:
+      image: wurstmeister/zookeeper:3.4.6
+      ports:
+        - "2181"
+      volumes:
+        - zookeeper:/opt/zookeeper-3.4.6/data
           
 volumes:
   postgres:
@@ -58,6 +78,7 @@ volumes:
   mysql:
   mongo:
   auth-server:
+  zookeeper:
   
 networks:
   default:
